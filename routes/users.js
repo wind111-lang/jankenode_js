@@ -64,7 +64,7 @@ router.post('/update', function (req, res, next) {
   }).then(function () {
     res.render('users', { title: 'User Management', message: 'ユーザ情報を更新しました!', err: '' });
   }).catch(err => {
-    res.render('update', { title: 'Update', message: 'ユーザ情報を更新するには，以下のフォームに入力してください．フォームが空の場合は現在の情報が適用されます．', err: err });
+    res.render('update', { title: 'Update', message: 'ユーザ情報を更新するには，以下のフォームに入力してください．', err: err });
   })
 });
 
