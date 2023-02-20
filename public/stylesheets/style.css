@@ -1,0 +1,91 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+img{
+    width: 75%;
+    height: 75%;
+    left: 65px;
+    top: 65px;
+    position: relative;
+    margin: auto;
+}
+
+button {
+    width: 90px;
+    height: 50px;
+    margin: 10px;
+    text-align: center;
+}
+
+.judge{
+    width: 100px;
+    height: 50px;
+    margin: auto;
+
+    font-size: 20px;
+
+    position: relative;
+    text-align: center;
+}
+
+.roulette{
+    display: block;
+
+    right: 30px;
+    width: 280px;
+    height: 280px;
+    margin: auto;
+    position: relative;
+}
+.cil{
+    width: 60px;
+    height: 60px; 
+    background-color: rgb(250, 255, 180);
+    border-radius: 50%;/* 円*/
+    line-height: 60px;
+    text-align: center;
+    display: block;
+    position: absolute;
+}
+
+.red {
+    background-color:#ff0062;
+    width: 60px;
+    height: 60px; 
+    border-radius: 50%;/* 円*/
+    line-height: 60px;
+    text-align: center;
+    display: block;
+    position: absolute;
+}
+.pink{
+    background-color:#ff88ff;
+    width: 60px;
+    height: 60px; 
+    border-radius: 50%;/* 円*/
+    line-height: 60px;
+    text-align: center;
+    display: block;
+    position: absolute;
+}
+
+.buttons{
+    width: 120px;
+    top: 100px;
+ 
+    margin: auto;
+    position: relative;
+}
+
+.buttons2{
+    width: 350px;
+    top: 110px;
+    margin: auto;
+    position: relative;
+}

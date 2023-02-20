@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <header>
+            <h1 class="display-4"><%= title %></h1>
+            </header>
+        </head>
+        <link rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+            crossorigin="anonymous">
+        <body class="container">
+            <ul class="text-danger">
+                <%= err %>
+                </ul>
+                <form action="/login/submit" method="post">
+                    <div class="form-group">
+                        <label for="user">ユーザ名</label>
+                        <input type="text" class="form-control"
+                            name="username">
+                        <label for="pass">パスワード</label>
+                        <input type="password" class="form-control"
+                            name="password">
+                    </div>
+                    <input type="submit" class="btn btn-primary"
+                        value="ログイン">
+                    <input type="button" class="btn btn-info"
+                        onclick="location.href='/register'"
+                        value="新規登録">
+                </form>
+            </body>
+        </html>

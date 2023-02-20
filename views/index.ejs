@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title><%= title %></title>
+      <link rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        crossorigin="anonymous">
+      <link rel='stylesheet' href='/stylesheets/style.css' />
+    </head>
+    <body>
+      <form action="/logout" method="post">
+        <input type="submit" class="btn btn-secondary" value="ログアウト">
+      </form>
+      <input type="button" class="btn btn-info" value="ユーザ情報"
+        onclick="location.href='/users'">
+      <h5 class="display-6">ユーザ名: <%= user %></h5>
+        <h5 class="display-6">所持メダル: <%= coins %></h5>
+          <div class="disp">
+            <div class="judge" id="judge"></div>
+            <div class="roulette" id="roulette">
+              <div class="screen" id="screen">
+                <img src="images/0.PNG" name="gcp">
+                <script>
+                  //外部JSで試したが，SetTimeoutやClientWidthの動作がおかしいので，ここに書いた
+                  window.onload = function() {
+                    var rock = document.getElementById("rock");
+                    var scissors = document.getElementById("scissors");
+                    var paper = document.getElementById("paper");
+
+                    rock.disabled = true;
+                    scissors.disabled = true;
+                    paper.disabled = true;
+
+                    rock.onclick = function(){
+                      StopSwitch(0);
+                    };
+                    scissors.onclick = function(){
+                      StopSwitch(1);
+                    };
+                    paper.onclick = function(){
+                      StopSwitch(2);
+                    };  
+
+                    RefillFlag();
+                  }
+
+                  var num = [5,4,2,1,5,4,2,1];
+                  var grid = 0;//丸に色付ける用のインデックス
+                  var number = 1;//cliに反映する数字
+                  var flag = false;//ルーレットの回転を止めるフラグ
+
+                  var roll = document.getElementById("roulette");//HTMLに表示
+                  var item_length = num.length;//円形に並べる
+                  var r = roll.clientWidth/2;//rouletteの半径
+                  var deg = 360.0/item_length;//360div要素数
+                  var rad = (deg*Math.PI/180.0);//deg2rad
+
+                  for(var i = 0; i < num.length; i++ ){
+                    var div = document.createElement('div');//create div
+                    div.className = "cil";
+                    div.id = "cil"+ i;
+                    div.innerHTML= num[i] ;
+                    const x = Math.cos(rad * i) * r + r;
+                    const y = Math.sin(rad * i) * r + r;
+                    var circle = roll.appendChild(div);
+                    circle.style.left = x + "px";
+                    circle.style.top = y + "px";
+                  }
+
+                  images= new Array("images/0.PNG","images/1.PNG","images/2.PNG");
+
+                  function RefillFlag(){
+                    var medal_str = JSON.parse('<%= JSON.stringify(coins) %>');
+                    medals = parseInt(medal_str);
+
+                    if (medals >= 10){
+                      document.getElementById("refill").disabled = true;
+                    }
+                    if (medals == 0){
+                      document.getElementById("start").disabled = true;
+                    }
+                  }
+
+                  function ButtonOn1(){
+                    document.getElementById("start").disabled = false;
+                    RefillFlag();
+                  }
+                  function ButtonOff1(){
+                    document.getElementById("start").disabled = true;
+                    document.getElementById("refill").disabled = true;
+                  }
+
+                  function ButtonOn2(){
+                    rock.disabled = false;
+                    scissors.disabled = false;
+                    paper.disabled = false;
+                  }
+                  function ButtonOff2(){
+                    rock.disabled = true;
+                    scissors.disabled = true;
+                    paper.disabled = true;
+                  }
+
+                  function StartSwitch(){
+                    count = -1;
+
+                    ButtonOff1();
+                    ButtonOn2();
+
+                    clearInterval(attract);
+                    StartJanken();
+                  }
+
+                  function StopSwitch(num){
+                    ButtonOff2();
+
+                    clearInterval(game);
+                    document.gcp.src= images[game_count];
+                    //console.log(num+" "+game_count);
+
+                    setTimeout(() =>{
+                      if(num == game_count){
+                        game_count = -1;
+                        ButtonOn2();
+
+                        StartJanken();
+                      //aiko
+                      }else if(num == 0 && game_count == 1 || num == 1 && game_count == 2 || num == 2 && game_count == 0){
+                        judge = document.getElementById("judge");
+                        judge.style.color = "red";
+                        judge.innerHTML = "You Win!!";
+
+                        game_count = -1;
+                        StartRoulette();
+
+                      //win
+                      }else if(num == 0 && game_count == 2 || num == 1 && game_count == 0 || num == 2 && game_count == 1){
+                        judge = document.getElementById("judge");
+                        judge.style.color = "blue";
+                        judge.innerHTML = "You Lose";
+
+                        game_count = -1;
+                        setTimeout(()=>{
+                          PostForm(-1);
+                        }, 1000);
+                        //ButtonOn1();
+                        //janken();
+                      //lose
+                      }
+                    }, 2000);
+                  }
+
+                  function PostForm(medals){
+                    var medal_str = JSON.parse('<%= JSON.stringify(coins) %>');
+                    var gotMedals = parseInt(medal_str) + medals;
+                    console.log(gotMedals);
+
+                    var form = document.createElement('form');
+                    form.action = '/result';
+                    form.method = 'post';
+                    form.style.display = 'none';
+
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'gotCoins';
+                    input.value = gotMedals;
+
+                    form.appendChild(input);
+                    document.body.appendChild(form);
+                    form.submit();
+                  }
+
+                  function StartRoulette(){
+                    if(flag == false){
+                      medal_roulette = setInterval("roulette()", 100);
+                      flag = true;
+                    }
+                  }
+
+                  function roulette(){
+                    var medals = 0;
+
+                    for(var k = 0; k < item_length; k++){
+                      var div_number = document.getElementById('cil'+[k]);//表示上のidの取得
+                      div_number.classList.remove('red');//redを消す
+                    }
+                    grid = Math.floor(Math.random()*num.length);
+                    number = num[grid];//redをつける数字
+                    div_number = document.getElementById('cil'+ number);
+                    div_number.classList.add('red');
+
+                    setTimeout(()=>{
+                      var result = document.querySelector('.red');
+                      clearInterval(medal_roulette);
+
+                      flag = false;
+
+                      num.splice(grid, 1);
+
+                      result.classList.remove('red');
+                      result.classList.add('pink');
+
+                      medals = result.innerHTML;
+
+                      num = [5,4,2,1,5,4,2,1];
+                      PostForm(parseInt(medals));
+
+                    }, 6500)
+                  }
+
+                  function janken(){
+                    count++;
+                    if (count == images.length ) {
+                      count= 0;
+                    }
+                    document.gcp.src= images[count];
+                    attract = setTimeout("janken()", 1000);
+                  }
+                  function StartJanken(){
+                    game_count++;
+                    if (game_count == images.length ) {
+                      game_count= 0;
+                    }
+                    document.gcp.src= images[game_count];
+                    game = setTimeout("StartJanken()", 100);
+                  }
+
+                  count= -1;
+                  game_count = -1;
+
+                  janken();
+                </script>
+              </div>
+            </div>
+          </div>
+          <div class="buttons">
+            <button class="btn btn-success" id="start"
+              onclick="StartSwitch()">スタート</button>
+            <form action="/refill" method="post">
+              <button class="btn btn-danger" id="refill">メダルを補充</button>
+              <input type="hidden" name="coins" value="<%= coins %>">
+            </form>
+          </div>
+          <div class="buttons2">
+            <button class="btn btn-primary" id="rock">グー</button>
+            <button class="btn btn-primary" id="scissors">チョキ</button>
+            <button class="btn btn-primary" id="paper">パー</button>
+          </div>
+        </div>
+      </div>
+    </body>
+  </html>

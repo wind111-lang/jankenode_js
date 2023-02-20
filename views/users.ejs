@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <header>
+            <h1 class="display-4"><%= title %></h1>
+                <%= message %>
+                </header>
+            </head>
+            <link rel="stylesheet"
+                href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+                crossorigin="anonymous">
+            <body class="container">
+                <input type="button" class="btn btn-info"
+                    onclick="location.href='/users/update'" value="ユーザ情報更新">
+                <input type="button" class="btn btn-danger"
+                    onclick="location.href='/users/delete'" value="ユーザ削除">
+                <input type="button" class="btn btn-success"
+                    onclick="location.href='/'" value="戻る">
+                <form action="/logout" method="post">
+                    <input type="submit" class="btn btn-secondary"
+                        value="ログアウト">
+                </form>
+            </body>
+        </html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <header>
+            <h1 class="display-4"><%= title %></h1>
+            </header>
+        </head>
+        <link rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+            crossorigin="anonymous">
+        <body class="container">
+            <ul class="text-danger">
+                <%= message %>
+                </ul>
+                <form action="/users/delete" method="post">
+                    <input type="submit" class="btn btn-danger"
+                        value="ユーザ削除">
+                    <input type="button" class="btn btn-secondary"
+                        onclick="location.href='/users'" value="キャンセル">
+                </form>
+            </body>
+        </html>
